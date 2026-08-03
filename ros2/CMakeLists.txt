@@ -13,6 +13,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/MotorObserved.msg"
   "msg/PowerObserved.msg"
   "msg/MotionObserved.msg"
+  "msg/MotionOdometry.msg"
   "msg/GEOGPoint.msg"
   "msg/GPSFrame.msg"
   "msg/UWBRawObserved.msg"

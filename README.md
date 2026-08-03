@@ -8,6 +8,7 @@ Uniubi 机器人协议定义仓库，维护 DDS IDL、ROS 2 msg/srv 和 schema �
 .
 ├── idl/
 │   ├── EventMessage.idl
+│   ├── MotionOdometry.idl
 │   ├── MotionObserved.idl
 │   ├── MotorState.idl
 │   ├── RPCMessage.idl
@@ -48,6 +49,7 @@ colcon build --packages-select uniubi
 ```bash
 ros2 interface show uniubi/srv/System
 ros2 interface show uniubi/msg/MotionObserved
+ros2 interface show uniubi/msg/MotionOdometry
 ```
 
 ## IDL 与 ROS 2 字段映射
@@ -59,6 +61,9 @@ ros2 interface show uniubi/msg/MotionObserved
 | `System_Request_.device_id` / `System_Response_.device_id` | `System.srv` 的 `device_id` | 目标设备 / 响应设备 SN |
 | `RemoteControl_.stickLX` | `RemoteControl.stick_l_x` | 遥控器摇杆字段 |
 | `MotorHeader.limbsNo` / `jointNo` | `MotorHeader.limbs_no` / `joint_no` | 电机身份字段 |
+| `MotionOdometry_.yawSpeed` / `timestampUs` | `MotionOdometry.yaw_speed` / `timestamp_us` | Walk 平面里程计字段 |
+
+`MotionOdometry` 仅在 Walk 模式下有效。从 Walk 切换到其他动作后，设备会清零 `position` / `yaw`、递增 `epoch`，并发布 `valid=false` 的状态。`position[2]` 和 `velocity[2]` 是三维兼容保留字段，当前固定为 `0`。
 
 完整协议和 DDS / ROS 2 wire contract 见 [`uniubi-docs`](https://github.com/uniubi-ai/uniubi-docs) 的 [`docs/uniubi_robot_dds_api.md`](https://github.com/uniubi-ai/uniubi-docs/blob/main/docs/uniubi_robot_dds_api.md)。
 
