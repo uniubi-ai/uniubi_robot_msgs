@@ -8,7 +8,7 @@
 
 不要从 `uniubi_robot_sdk/include/uniubi/robot_sdk/MotionSdkProtocol.h` 反推 DDS wire layout。SDK 结构是 API / runtime POD，不是 DDS wire struct。
 
-`MotionOdometry_` 的 IDL 字段使用 `yawSpeed` / `timestampUs`，对应 ROS 2 `MotionOdometry.msg` 的 `yaw_speed` / `timestamp_us`。`position[2]` 和 `velocity[2]` 是保留字段，当前固定为 `0`。里程计值仅在 Walk 模式有效；从 Walk 切换到其他动作后，`position` / `yaw` 清零、`epoch` 递增且 `valid=false`。
+`MotionOdometry` 定义在 `SensorObserved.idl` 中，并通过 `SensorObserved_.odom` 随完整传感器观测发布；IDL 的 `yawSpeed` 对应 ROS 2 `MotionOdometry.msg` 的 `yaw_speed`。`position[2]` 和 `velocity[2]` 是保留字段，当前固定为 `0`。里程计仅在 Walk 模式有效；退出 Walk 时保留区间末值并置 `valid=false`，再次进入 Walk 时建立新原点并递增 `epoch`。
 
 ## 已知 SDK POD 差异
 

@@ -40,6 +40,16 @@ module uniubi {
             uint16      azimuth;    /**< 方位角 单位 deg,[0, 360) 正前方 0 度、逆时针递增 */
             uint32      distance;   /**< 距离 单位 cm */
         };
+
+        typedef float OdomVector3[3];
+        struct MotionOdometry {
+            uint8       valid;
+            uint32      epoch;
+            float       yaw;
+            float       yawSpeed;
+            OdomVector3 position;
+            OdomVector3 velocity;
+        };
     };
 
     module msg {
@@ -47,11 +57,13 @@ module uniubi {
 
             typedef uniubi::dds_::GPSFrame GPSFrame;
             typedef uniubi::dds_::UWBRawObserved UWBRawObserved;
+            typedef uniubi::dds_::MotionOdometry MotionOdometry;
 
             struct SensorObserved_ {
                 uint64          timestamp;  ///递增相对时间戳(单位 us,设备内部服务使用,非墙钟)
                 GPSFrame        gps;        ///GPS 观测
                 UWBRawObserved  uwb;        ///UWB 观测
+                MotionOdometry  odom;       ///Walk 平面里程计
             };
         };
     };
