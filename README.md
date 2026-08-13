@@ -1,10 +1,12 @@
 # Uniubi Robot Msgs
 
-Uniubi 机器人协议定义仓库，维护 DDS IDL、ROS 2 msg/srv 和 schema 的统一源头。
+**English** | [简体中文](README.zh-CN.md)
 
-## 目录结构
+This repository is the single source of truth for Uniubi robot protocol definitions, including DDS IDL, ROS 2 messages and services, and schemas.
 
-```
+## Repository layout
+
+```text
 .
 ├── idl/
 │   ├── EventMessage.idl
@@ -24,15 +26,15 @@ Uniubi 机器人协议定义仓库，维护 DDS IDL、ROS 2 msg/srv 和 schema �
 └── tests/
 ```
 
-## 协议规则
+## Protocol rules
 
-- `idl/` 是协议唯一信源。
-- `ros2/msg` 和 `ros2/srv` 由 IDL 映射生成，字段名按 ROS 2 规范使用 `snake_case`。
-- 下游仓库不复制消息定义，应通过安装本仓库的 ROS 2 package 或引用发布版本获取接口。
-- 协议与 SDK POD 结构的边界见 [`docs/protocol_notes.md`](docs/protocol_notes.md)。
-- ROS 2 示例接入和二次开发入口见 [`uniubi_ros2`](https://github.com/uniubi-ai/uniubi_ros2)。
+- `idl/` is the sole source of truth for the protocol.
+- `ros2/msg` and `ros2/srv` are generated from the IDL mappings. Field names use ROS 2 `snake_case` conventions.
+- Downstream repositories must not copy message definitions. Install this repository's ROS 2 package or depend on a published release instead.
+- See [Protocol notes](docs/protocol_notes.md) for the boundary between the protocol and SDK POD structures.
+- See [`uniubi_ros2`](https://github.com/uniubi-ai/uniubi_ros2) for ROS 2 examples and integration guidance.
 
-## ROS 2 构建
+## Build the ROS 2 package
 
 ```bash
 mkdir -p ~/ros2_ws/src
@@ -43,7 +45,7 @@ colcon build --packages-select uniubi
 . install/setup.bash
 ```
 
-构建完成后可检查接口：
+After the build, inspect the interfaces with:
 
 ```bash
 ros2 interface show uniubi/srv/System
@@ -52,22 +54,22 @@ ros2 interface show uniubi/msg/MotionOdometry
 ros2 interface show uniubi/msg/SensorObserved
 ```
 
-## IDL 与 ROS 2 字段映射
+## IDL-to-ROS 2 field mappings
 
-| IDL 字段 / 类型 | ROS 2 字段 / 类型 | 说明 |
+| IDL field / type | ROS 2 field / type | Description |
 |---|---|---|
-| `Header.clientId` / `requestId` | `Header.client_id` / `request_id` | `Request.idl` 的 Header 字段映射；`System.srv` 不含该 Header 字段 |
-| `System_Request_` / `System_Response_` | `System.srv` | ROS 2 service 合并定义 |
-| `System_Request_.device_id` / `System_Response_.device_id` | `System.srv` 的 `device_id` | 目标设备 / 响应设备 SN |
-| `RemoteControl_.stickLX` | `RemoteControl.stick_l_x` | 遥控器摇杆字段 |
-| `MotorHeader.limbsNo` / `jointNo` | `MotorHeader.limbs_no` / `joint_no` | 电机身份字段 |
-| `SensorObserved_.odom` | `SensorObserved.odom` | GPS、UWB 与 Walk 平面里程计统一观测字段 |
-| `MotionOdometry.yawSpeed` | `MotionOdometry.yaw_speed` | Walk 平面里程计字段 |
+| `Header.clientId` / `requestId` | `Header.client_id` / `request_id` | Header fields from `Request.idl`; `System.srv` does not contain this Header |
+| `System_Request_` / `System_Response_` | `System.srv` | Combined ROS 2 service definition |
+| `System_Request_.device_id` / `System_Response_.device_id` | `device_id` in `System.srv` | Target device / responding device SN |
+| `RemoteControl_.stickLX` | `RemoteControl.stick_l_x` | Remote-controller stick field |
+| `MotorHeader.limbsNo` / `jointNo` | `MotorHeader.limbs_no` / `joint_no` | Motor identity fields |
+| `SensorObserved_.odom` | `SensorObserved.odom` | Unified GPS, UWB, and Walk planar-odometry observation |
+| `MotionOdometry.yawSpeed` | `MotionOdometry.yaw_speed` | Walk planar-odometry field |
 
-`MotionOdometry` 作为 `SensorObserved.odom` 的嵌套类型，仅在 Walk 模式下有效。退出 Walk 时保留当前区间末值并将 `valid` 置为 false；再次进入 Walk 时建立新原点并递增 `epoch`。`position[2]` 和 `velocity[2]` 是三维兼容保留字段，当前固定为 `0`。
+`MotionOdometry` is nested in `SensorObserved.odom` and is valid only in Walk mode. When Walk mode ends, the final value for that interval is retained and `valid` becomes false. Entering Walk mode again establishes a new origin and increments `epoch`. `position[2]` and `velocity[2]` are reserved for three-dimensional compatibility and are currently always `0`.
 
-完整协议和 DDS / ROS 2 wire contract 见 [`uniubi-docs`](https://github.com/uniubi-ai/uniubi-docs) 的 [`docs/uniubi_robot_dds_api.md`](https://github.com/uniubi-ai/uniubi-docs/blob/main/docs/uniubi_robot_dds_api.md)。
+For the complete protocol and DDS / ROS 2 wire contract, see [`docs/uniubi_robot_dds_api.md`](https://github.com/uniubi-ai/uniubi-docs/blob/main/docs/uniubi_robot_dds_api.md) in [`uniubi-docs`](https://github.com/uniubi-ai/uniubi-docs).
 
-## 许可证
+## License
 
-本仓库中的 UniUbi 原创 IDL、ROS 2 接口定义、schema、代码和文档使用 Apache License 2.0。详见 [LICENSE](LICENSE) 和 [NOTICE](NOTICE)。
+Uniubi-authored IDL, ROS 2 interface definitions, schemas, code, and documentation in this repository are licensed under the Apache License 2.0. See [LICENSE](LICENSE) and [NOTICE](NOTICE).

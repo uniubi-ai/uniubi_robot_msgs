@@ -1,34 +1,36 @@
-# 协议注意事项
+# Protocol Notes
 
-本仓是 DDS IDL 与 ROS 2 消息 / 服务定义的来源，不定义 `uniubi_robot_sdk` 内部使用的 C++ SDK POD 结构。
+**English** | [简体中文](protocol_notes.zh-CN.md)
 
-## IDL 是 wire contract
+This repository is the source of DDS IDL and ROS 2 message/service definitions. It does not define the C++ SDK POD structures used internally by `uniubi_robot_sdk`.
 
-实现 DDS 客户端或生成 ROS 2 接口时，以 `idl/` 作为 wire contract 源头。`ros2/` 下的 ROS 2 package 按 IDL 映射生成，并遵循 ROS 2 字段命名规范，例如 `clientId` 映射为 `client_id`，`stickLX` 映射为 `stick_l_x`。
+## IDL is the wire contract
 
-不要从 `uniubi_robot_sdk/include/uniubi/robot_sdk/MotionSdkProtocol.h` 反推 DDS wire layout。SDK 结构是 API / runtime POD，不是 DDS wire struct。
+When implementing a DDS client or generating ROS 2 interfaces, treat `idl/` as the source of truth for the wire contract. The ROS 2 package under `ros2/` is generated from the IDL mappings and follows ROS 2 field-naming conventions. For example, `clientId` maps to `client_id`, and `stickLX` maps to `stick_l_x`.
 
-`MotionOdometry` 定义在 `SensorObserved.idl` 中，并通过 `SensorObserved_.odom` 随完整传感器观测发布；IDL 的 `yawSpeed` 对应 ROS 2 `MotionOdometry.msg` 的 `yaw_speed`。`position[2]` 和 `velocity[2]` 是保留字段，当前固定为 `0`。里程计仅在 Walk 模式有效；退出 Walk 时保留区间末值并置 `valid=false`，再次进入 Walk 时建立新原点并递增 `epoch`。
+Do not infer the DDS wire layout from `uniubi_robot_sdk/include/uniubi/robot_sdk/MotionSdkProtocol.h`. SDK structures are API/runtime PODs, not DDS wire structures.
 
-## 已知 SDK POD 差异
+`MotionOdometry` is defined in `SensorObserved.idl` and published as `SensorObserved_.odom` within the full sensor observation. The IDL field `yawSpeed` maps to `yaw_speed` in the ROS 2 `MotionOdometry.msg`. `position[2]` and `velocity[2]` are reserved and currently always `0`. Odometry is valid only in Walk mode. When Walk mode ends, the final value for that interval is retained and `valid` becomes false. Entering Walk mode again establishes a new origin and increments `epoch`.
 
-`MotorHeader` 是最容易混用的结构：
+## Known SDK POD differences
 
-| 层级 | 字段 |
+`MotorHeader` is the structure most likely to be confused across layers:
+
+| Layer | Fields |
 |---|---|
-| DDS IDL / ROS 2 | `uint32 limbsNo` / `uint32 jointNo` (`limbs_no` / `joint_no` in ROS 2) |
+| DDS IDL / ROS 2 | `uint32 limbsNo` / `jointNo` (`limbs_no` / `joint_no` in ROS 2) |
 | C++ SDK POD | `uint16 limbNo` / `uint16 jointNo` |
 
-两者都描述电机身份，但属于不同 ABI / 协议契约。把 SDK 观测量桥接到 DDS 或 ROS 2 消息时，应显式转换字段，不要直接混用内存结构。
+Both identify a motor, but they belong to different ABI/protocol contracts. When bridging SDK observations to DDS or ROS 2 messages, convert the fields explicitly instead of reusing the memory layout.
 
-## System.srv 字段边界
+## `System.srv` field boundary
 
-`ros2/srv/System.srv` 是 ROS 2 service 接口定义，描述 ROS 2 侧承载的请求 / 响应字段。
+`ros2/srv/System.srv` is the ROS 2 service interface definition and describes the request and response fields carried on the ROS 2 side.
 
-字段边界如下：
+The field boundary is:
 
-- `Header.msg` 来自 `Request.idl`，包含 `client_id` / `request_id`，用于包含 Header 的消息类型和 IDL 映射核对。
-- `System.srv` 不含 `Header` 字段；不要把 `Header.msg` 当作 `System.srv` 的请求字段。
-- `System.srv` 请求和响应都包含 `device_id`；多设备场景应填写目标设备 SN，并核对响应中的 `device_id`。
+- `Header.msg` comes from `Request.idl` and contains `client_id` / `request_id` for message types that include a Header and for checking IDL mappings.
+- `System.srv` does not contain a `Header` field. Do not treat `Header.msg` as part of the `System.srv` request.
+- Both the `System.srv` request and response contain `device_id`. In multi-device environments, set the target device SN and verify the `device_id` in the response.
 
-本仓维护 `.srv` / `.msg` 字段定义和 IDL 映射边界，不承载业务调用封装。ROS 2 示例接入流程见 `uniubi_ros2`，字段定义仍以本仓发布的接口包为准。
+This repository maintains `.srv` / `.msg` field definitions and IDL mapping boundaries; it does not provide business-level call wrappers. See `uniubi_ros2` for ROS 2 integration examples. The interface package published by this repository remains authoritative for field definitions.
