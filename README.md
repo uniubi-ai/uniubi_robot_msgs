@@ -4,6 +4,10 @@
 
 This repository is the single source of truth for Uniubi robot protocol definitions, including DDS IDL, ROS 2 messages and services, and schemas.
 
+## Robot Version Requirement
+
+Required robot software version: [Cyvet-V1.00.000](http://192.168.1.8/RobotRelease/System/littleDog/Release/dv500/Cyvet-V1.00.000).
+
 ## Repository layout
 
 ```text
