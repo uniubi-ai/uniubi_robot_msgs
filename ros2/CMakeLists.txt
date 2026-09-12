@@ -24,4 +24,6 @@ rosidl_generate_interfaces(${PROJECT_NAME}
 )
 
 ament_export_dependencies(rosidl_default_runtime)
+install(DIRECTORY ../idl/ DESTINATION share/${PROJECT_NAME}/native_idl)
+
 ament_package()

@@ -39,7 +39,7 @@ Uniubi 机器人协议定义仓库，维护 DDS IDL、ROS 2 msg/srv 和 schema �
 ```bash
 mkdir -p ~/ros2_ws/src
 git clone https://github.com/uniubi-ai/uniubi_robot_msgs.git ~/uniubi_robot_msgs
-cp -r ~/uniubi_robot_msgs/ros2 ~/ros2_ws/src/uniubi
+cp -r ~/uniubi_robot_msgs ~/ros2_ws/src/uniubi_robot_msgs
 cd ~/ros2_ws
 colcon build --packages-select uniubi
 . install/setup.bash
@@ -73,3 +73,6 @@ ros2 interface show uniubi/msg/SensorObserved
 ## 许可证
 
 本仓库中的 UniUbi 原创 IDL、ROS 2 接口定义、schema、代码和文档使用 Apache License 2.0。详见 [LICENSE](LICENSE) 和 [NOTICE](NOTICE)。
+
+`idl/BrainMotionState.idl` 是设备已有内部 DDS 类型的原样定义，用于大脑本地观测适配。
+它保留 `uniubi::dds_::BrainMotionState` 类型名，不生成同名 ROS `.msg`。ROS2 包安装时会同时安装 `idl/`，因此应保留完整仓库目录结构。
