@@ -11,3 +11,4 @@ int16 rssi    # 信号强度 单位 dbm
 uint16 pitch
 uint16 azimuth
 uint32 distance
+uint32 beacon_id

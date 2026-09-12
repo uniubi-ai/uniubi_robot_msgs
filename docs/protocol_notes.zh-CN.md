@@ -34,3 +34,5 @@
 - `System.srv` 请求和响应都包含 `device_id`；多设备场景应填写目标设备 SN，并核对响应中的 `device_id`。
 
 本仓维护 `.srv` / `.msg` 字段定义和 IDL 映射边界，不承载业务调用封装。ROS 2 示例接入流程见 `uniubi_ros2`，字段定义仍以本仓发布的接口包为准。
+
+UWB 观测新增当前配对信标编号：IDL / C++ 为 `uwb.beaconId`，ROS 2 / Python 为 `uwb.beacon_id`。应结合 `pairState` / `pair_state` 和 `valid` 判断配对状态及观测有效性。本版本要求 SDK、消息定义和设备固件版本匹配；升级后需重新生成消息并重新编译应用和 Python 绑定，不支持旧布局混用。
