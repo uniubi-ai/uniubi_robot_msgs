@@ -34,3 +34,5 @@ The field boundary is:
 - Both the `System.srv` request and response contain `device_id`. In multi-device environments, set the target device SN and verify the `device_id` in the response.
 
 This repository maintains `.srv` / `.msg` field definitions and IDL mapping boundaries; it does not provide business-level call wrappers. See `uniubi_ros2` for ROS 2 integration examples. The interface package published by this repository remains authoritative for field definitions.
+
+UWB observations expose the currently paired beacon ID as `uwb.beaconId` in IDL/C++ and `uwb.beacon_id` in ROS 2/Python. Check pairing state (`pairState` / `pair_state`) and `valid` alongside this ID. This version requires matching SDK, message definitions, and device firmware. Regenerate messages and rebuild applications and Python bindings after upgrading; mixing old and new layouts is unsupported.

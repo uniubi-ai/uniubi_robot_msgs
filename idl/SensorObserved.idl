@@ -39,6 +39,7 @@ module uniubi {
             uint16      pitch;      /**< 俯仰角 单位 deg,[0, 360) */
             uint16      azimuth;    /**< 方位角 单位 deg,[0, 360) 正前方 0 度、逆时针递增 */
             uint32      distance;   /**< 距离 单位 cm */
+            uint32      beaconId;   /**< 当前配对信标ID */
         };
 
         typedef float OdomVector3[3];

@@ -39,7 +39,7 @@ This repository is the single source of truth for Uniubi robot protocol definiti
 ```bash
 mkdir -p ~/ros2_ws/src
 git clone https://github.com/uniubi-ai/uniubi_robot_msgs.git ~/uniubi_robot_msgs
-cp -r ~/uniubi_robot_msgs/ros2 ~/ros2_ws/src/uniubi
+cp -r ~/uniubi_robot_msgs ~/ros2_ws/src/uniubi_robot_msgs
 cd ~/ros2_ws
 colcon build --packages-select uniubi
 . install/setup.bash
@@ -73,3 +73,6 @@ For the complete protocol and DDS / ROS 2 wire contract, see [`docs/uniubi_robot
 ## License
 
 Uniubi-authored IDL, ROS 2 interface definitions, schemas, code, and documentation in this repository are licensed under the Apache License 2.0. See [LICENSE](LICENSE) and [NOTICE](NOTICE).
+
+`idl/BrainMotionState.idl` mirrors the existing internal device DDS type for brain-local observation adapters.
+It retains the `uniubi::dds_::BrainMotionState` type name and is not exposed as an identically named ROS `.msg`. Keep the complete repository layout: the ROS2 package also installs `idl/`.
