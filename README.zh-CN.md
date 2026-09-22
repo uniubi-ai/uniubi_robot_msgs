@@ -6,7 +6,7 @@ Uniubi 机器人协议定义仓库，维护 DDS IDL、ROS 2 msg/srv 和 schema �
 
 ## 机器人版本要求
 
-机器人软件版本要求：[Cyvet-V1.00.000](http://192.168.1.8/RobotRelease/System/littleDog/Release/dv500/Cyvet-V1.00.000)。
+机器人软件版本要求：Cyvet-V1.00.000 及以上。
 
 ## 目录结构
 

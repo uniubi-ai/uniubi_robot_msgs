@@ -6,7 +6,7 @@ This repository is the single source of truth for Uniubi robot protocol definiti
 
 ## Robot Version Requirement
 
-Required robot software version: [Cyvet-V1.00.000](http://192.168.1.8/RobotRelease/System/littleDog/Release/dv500/Cyvet-V1.00.000).
+Required robot software version: Cyvet-V1.00.000 or newer.
 
 ## Repository layout
 
